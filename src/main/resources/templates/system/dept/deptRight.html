@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>右侧</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/resources/css/public.css" media="all" />
+    <link rel="stylesheet" href="/resources/layui_ext/dtree/dtree.css" media="all" />
+    <link rel="stylesheet" href="/resources/layui_ext/dtree/font/dtreefont.css" media="all" />
+</head>
+<body class="childrenBody">
+
+<!--查询条件开始-->
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 5px;">
+    <legend>查询条件</legend>
+</fieldset>
+<blockquote class="layui-elem-quote">
+    <form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">部门名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="title"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">部门地址</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="address" id="date"   autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">部门备注</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="remark" id=""   autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="text-align: center">
+                <button type="button" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="doSearch">
+                    <span class="layui-icon layui-icon-search"></span>提交
+                </button>
+                <button type="reset" class="layui-btn layui-btn-warm">
+                    <span class="layui-icon layui-icon-face-surprised"></span>重置
+                </button>
+            </div>
+        </div>
+
+    </form>
+</blockquote>
+<!--查询条件结束-->
+
+<!--数据表格开始-->
+<div>
+    <table class="layui-hide" id="deptTable" lay-filter="deptTable"></table>
+
+    <div id="deptToolBar" style="display:none">
+        <button type="reset" lay-event="add"  shiro:hasPermission="'dept:create'" class="layui-btn layui-btn-sm layui-btn-primary">
+            <span class="layui-icon layui-icon-add-1"></span>添加部门
+        </button>
+    </div>
+    <div id="deptRowBar" style="display:none">
+        <button type="reset" lay-event="update" shiro:hasPermission="'dept:update'" class="layui-btn layui-btn-sm layui-btn-warm">
+            <span class="layui-icon  layui-icon-edit"></span>修改
+        </button>
+        <button type="reset" lay-event="delete" shiro:hasPermission="'dept:delete'" class="layui-btn layui-btn-sm layui-btn-danger">
+            <span class="layui-icon  layui-icon-delete"></span>删除
+        </button>
+    </div>
+</div>
+<!--数据表格结束-->
+
+<!--添加和修改的弹出层开始-->
+<div style="display: none;padding: 5px" id="addOrUpdateDiv">
+    <form action="" method="post" class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm">
+        <div class="layui-form-item">
+            <label class="layui-form-label">父级部门</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="pid" id="pid">
+                <!-- 存放树的容器 -->
+                <ul id="deptTree"  class="dtree" data-id="0"></ul>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">部门名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="id">
+                <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入部门名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">部门地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address" lay-verify="required" autocomplete="off" placeholder="请输入部门地址" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">部门备注</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="remark" lay-verify="" ></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否展开</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="open" value="1" title="展开" checked>
+                <input type="radio" name="open" value="0" title="不展开" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否可用</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="available" value="1" title="可用" checked>
+                <input type="radio" name="available" value="0" title="不可用" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序码</label>
+            <div class="layui-input-block">
+                <input type="text" id="ordernum" name="ordernum" lay-verify="required/number" autocomplete="off" placeholder="请输入排序码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center">
+            <button type="button" class="layui-btn layui-btn-normal"  id="doSubmit">
+                <span class="layui-icon layui-icon-search"></span>提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-warm">
+                <span class="layui-icon layui-icon-face-surprised"></span>重置
+            </button>
+        </div>
+    </form>
+</div>
+<!--添加和修改的弹出层结束-->
+
+
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script>
+    var tableIns;
+    layui.extend({
+        dtree: '/resources/layui_ext/dtree/dtree'   // {/}的意思即代表采用自有路径，即不跟随 base 路径
+    }).use(['jquery','form','table','layer','dtree','layedit'],function () {
+        var $=layui.jquery;
+        var form=layui.form;
+        var table=layui.table;
+        var layer=layui.layer;
+        var dtree=layui.dtree;
+        var layedit=layui.layedit;
+
+        tableIns=table.render({
+            elem: '#deptTable'
+            ,url:'/dept/loadAllDept'
+            ,toolbar: '#deptToolBar' //开启头部工具栏，并为其绑定左侧模板
+            ,title: '部门数据表'
+            ,cols: [ [
+                 {field:'id', title:'ID',align:'center',width:50}
+                 ,{field:'pid', title:'父级部门ID',align:'center',width:100}
+                ,{field:'title', title:'部门名称',align:'center',width:100}
+                ,{field:'address', title:'部门地址',align:'center',width:100}
+                ,{field:'remark', title:'部门备注',align:'center',width:100}
+                ,{field:'open', title:'是否展开',align:'center',width:100,templet:function (d) {
+                        return d.open==1?'<font color=blue>展开</font>':'<font color=red>不展开</font>'
+                    }}
+                ,{field:'available', title:'是否可用',align:'center',width:100,templet:function (d) {
+                        return d.available==1?'<font color=blue>可用</font>':'<font color=red>不可用</font>'
+                    }}
+                ,{field:'ordernum', title:'排序码',align:'center',width:100}
+                ,{field:'createtime', title:'创建时间',align:'center',width:200}
+                ,{fixed: 'right', title:'操作', toolbar: '#deptRowBar',align:'center',width:200}
+            ] ]
+            ,page: true
+            ,done: function(res, curr, count){//处理删除某一页最后一条数据的bug
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                //得到当前页码
+                //得到数据总量
+                if(res.data.length==0&&curr!=1){
+                    tableIns.reload({
+                        page:{
+                            curr:(curr-1)
+                        }
+                    });
+                }
+            }
+        });
+
+
+
+        form.on("submit(doSearch)",function (data) {
+            tableIns.reload({
+                where:data.field,
+                page:{
+                    curr:1
+                }
+            });
+            return false;
+        });
+
+        table.on("toolbar(deptTable)",function (obj) {
+            //获取选中行
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'add':
+                    openAddLayer();
+                    break;
+            };
+        });
+        table.on("tool(deptTable)",function (obj) {
+            var data=obj.data;
+            switch(obj.event){
+                case 'update':
+                    openUpdateDeptLayer(data);
+                    break;
+                case 'delete':
+                    deleteDept(data);
+                    break;
+            };
+        });
+
+        var mainIndex;
+        var url;
+        //打开添加弹出层
+        function openAddLayer() {
+            mainIndex=layer.open({
+                type:1,
+                content:$("#addOrUpdateDiv"),
+                area:['550px','450px'],
+                title:'添加部门',
+                success:function () {
+                    $("#dataFrm")[0].reset();
+                    // layedit.setContent(editIndex,"");
+                    editIndex = layedit.build('content');
+                    $.get("/dept/getMaxOrderNum",function (res) {
+                        // alert(res);
+                        $("#ordernum").val(res);
+                    });
+                    // layedit.build('content');
+                    url="/dept/addDept";
+                }
+            });
+
+        }
+
+        //打开修改弹出层
+        function openUpdateDeptLayer(data) {
+            mainIndex =layer.open({
+                type:1,
+                content:$("#addOrUpdateDiv"),
+                area:['550px','450px'],
+                title:'修改部门',
+
+                success:function () {
+                    $("#dataFrm")[0].reset();//重置
+                    form.val("dataFrm",data);
+                    // dtree.dataInit("deptTree",data.pid);
+                    editIndex = layedit.build('content');
+                    url="/dept/updateDept";
+                }
+            });
+        }
+
+
+        //添加和修改提交
+
+        $("#doSubmit").click(function () {
+            var data=$("#dataFrm").serialize();
+            // alert(data);
+            $.post(url,data,function (res) {
+                if (res.code==200){
+                    tableIns.reload();
+                    deptSelect.reload();
+                    window.parent.left.deptTree.reload();
+                    layer.close(mainIndex);
+                }else {
+                    layer.msg(res.msg);
+                    layer.close(mainIndex);
+                }
+            });
+        });
+
+        //删除
+        function deleteDept(data) {
+            $.post("/dept/checkDeptHasChildrenNode",{id:data.id},function (res) {
+                    if (res.value){
+                        layer.msg("当前部门有子部门，请先删除子部门");
+                    }else {
+                        layer.confirm('您确定要删除吗?', {icon: 3, title:'警告'}, function(index){
+                            //do something
+                            $.post("/dept/deleteDept",{id:data.id},function (res) {
+                                if (res.code==200){
+                                    tableIns.reload();
+                                    deptSelect.reload();
+                                    window.parent.left.deptTree.reload();
+                                }else {
+                                    layer.msg(res.msg);
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    }
+            })
+
+        };
+
+        // 初始化树
+        var deptSelect = dtree.renderSelect({
+            elem: "#deptTree",
+            width:"100%",
+            dataStyle: "layuiStyle",  //使用layui风格的数据格式
+            dataFormat: "list",  //配置data的风格为list
+            response:{message:"msg",statusCode:0},  //修改response中返回数据的定义
+            url: "/dept/loadDeptManagerLeftTreeJson" // 使用url加载（可与data加载同时存在）
+        });
+
+
+        dtree.on("node(deptTree)",function (obj) {
+            $("#pid").val(obj.param.nodeId);
+        });
+
+    });
+
+    function reloadTable(id){
+        tableIns.reload({
+            where:{
+                id:id
+            },
+            page:{
+                curr:1
+            }
+        })
+    };
+</script>
+</body>
+</html>

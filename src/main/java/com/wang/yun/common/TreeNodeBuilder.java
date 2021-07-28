@@ -1,0 +1,22 @@
+package com.wang.yun.common;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TreeNodeBuilder {
+
+    public static List<TreeNode> build(List<TreeNode> treeNodes,Integer topPId){
+        List<TreeNode> nodes=new ArrayList<>();
+        for (TreeNode n1 : treeNodes) {
+            if (n1.getPid()==topPId){
+                nodes.add(n1);
+            }
+            for (TreeNode n2 : treeNodes) {
+                if (n1.getId()==n2.getPid()){
+                    n1.getChildren().add(n2);
+                }
+            }
+        }
+        return nodes;
+    }
+}
